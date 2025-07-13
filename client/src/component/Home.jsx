@@ -113,6 +113,7 @@ const Home = () => {
   };
 
   console.log("bookForm", bookForm);
+
   return (
     <div className="w-full px-5 min-h[calc(100vh-60px)]">
       <div className="w-full grid grid-cols-5 gap-3 my-4">
@@ -281,6 +282,7 @@ const Home = () => {
 
   const [booklist, setbooklist] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [searchTerm, setsearchTerm] = useState("");
 
   const getAllbookList = async () => {
     try {
@@ -375,91 +377,120 @@ const Home = () => {
     setIsUpdating(true);
   };
 
-  return (
-    <div className="w-full px-4 md:px-8 py-6 min-h-screen bg-gray-50">
-      {/* Form Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        {[
-          { label: "Book Name", name: "BookName", type: "text" },
-          { label: "Book Title", name: "BookTitle", type: "text" },
-          { label: "Author Name", name: "AuthorName", type: "text" },
-          { label: "Selling Price", name: "SellingPrice", type: "text" },
-          { label: "Publish Date", name: "PublishDate", type: "date" },
-        ].map((field, i) => (
-          <div key={i} className="flex flex-col gap-1">
-            <label className="text-sm text-gray-600">{field.label}</label>
-            <input
-              type={field.type}
-              placeholder={field.label}
-              name={field.name}
-              value={bookForm[field.name]}
-              onChange={handleFormChange}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-            />
-          </div>
-        ))}
-      </div>
+  const handleSearch = async () => {
+    try {
+      const { data } = await bookBaseUrl.get(`/searchbook?query=${searchTerm}`);
+      if (data?.Success) {
+        setbooklist(data.BookList);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      {/* Submit Button */}
-      <div className="flex justify-end mb-8">
+  return (
+    <div>
+      <div className="flex justify-end">
+        <input
+          type="text"
+          placeholder="find your book"
+          className="mx-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          value={searchTerm}
+          onChange={(e) => setsearchTerm(e.target.value)}
+        />
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition duration-200"
-          onClick={handleSubmit}
+          onClick={handleSearch}
         >
-          {isUpdating ? "UPDATE" : "SUBMIT"}
+          Search
         </button>
       </div>
+      <div className="w-full px-4 md:px-8 py-6 min-h-screen bg-gray-50">
+        {/* Form Section */}
 
-      {/* Table Section */}
-      <div className="overflow-x-auto shadow-sm rounded-md">
-        <table className="min-w-full text-sm bg-white divide-y divide-gray-200">
-          <thead className="bg-gray-100 text-gray-600 uppercase text-xs font-medium">
-            <tr>
-              {[
-                "Book Name",
-                "Book Title",
-                "Author Name",
-                "Selling Price",
-                "Publish Date",
-                "Action",
-              ].map((heading, i) => (
-                <th key={i} className="px-4 py-3 text-left">
-                  {heading}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {booklist?.map((book, index) => (
-              <tr
-                key={index}
-                className="hover:bg-gray-50 transition duration-150"
-              >
-                <td className="px-4 py-3">{book?.BookName}</td>
-                <td className="px-4 py-3">{book?.BookTitle}</td>
-                <td className="px-4 py-3">{book?.AuthorName}</td>
-                <td className="px-4 py-3">{book?.SellingPrice}</td>
-                <td className="px-4 py-3">{book?.PublishDate}</td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleUpdate(book)}
-                      className="p-2 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
-                    >
-                      <FaPen />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(book._id)}
-                      className="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-md"
-                    >
-                      <MdDelete />
-                    </button>
-                  </div>
-                </td>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          {[
+            { label: "Book Name", name: "BookName", type: "text" },
+            { label: "Book Title", name: "BookTitle", type: "text" },
+            { label: "Author Name", name: "AuthorName", type: "text" },
+            { label: "Selling Price", name: "SellingPrice", type: "text" },
+            { label: "Publish Date", name: "PublishDate", type: "date" },
+          ].map((field, i) => (
+            <div key={i} className="flex flex-col gap-1">
+              <label className="text-sm text-gray-600">{field.label}</label>
+              <input
+                type={field.type}
+                placeholder={field.label}
+                name={field.name}
+                value={bookForm[field.name]}
+                onChange={handleFormChange}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end mb-8">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition duration-200"
+            onClick={handleSubmit}
+          >
+            {isUpdating ? "UPDATE" : "SUBMIT"}
+          </button>
+        </div>
+
+        {/* Table Section */}
+        <div className="overflow-x-auto shadow-sm rounded-md">
+          <table className="min-w-full text-sm bg-white divide-y divide-gray-200">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-xs font-medium">
+              <tr>
+                {[
+                  "Book Name",
+                  "Book Title",
+                  "Author Name",
+                  "Selling Price",
+                  "Publish Date",
+                  "Action",
+                ].map((heading, i) => (
+                  <th key={i} className="px-4 py-3 text-left">
+                    {heading}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {booklist?.map((book, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-50 transition duration-150"
+                >
+                  <td className="px-4 py-3">{book?.BookName}</td>
+                  <td className="px-4 py-3">{book?.BookTitle}</td>
+                  <td className="px-4 py-3">{book?.AuthorName}</td>
+                  <td className="px-4 py-3">{book?.SellingPrice}</td>
+                  <td className="px-4 py-3">{book?.PublishDate}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleUpdate(book)}
+                        className="p-2 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
+                      >
+                        <FaPen />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(book._id)}
+                        className="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-md"
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

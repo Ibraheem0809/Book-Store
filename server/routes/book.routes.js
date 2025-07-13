@@ -4,6 +4,7 @@ const {
   handleBookListController,
   handleBookDeleteController,
   handleBookUpdateController,
+  handleSearchBookController,
 } = require("../controller/book.controller");
 
 const router = express.Router();
@@ -19,5 +20,8 @@ router.post("/deletebook", handleBookDeleteController);
 
 // http://localhost:3000/book/updatebook    {make updation og the book list}
 router.put("/updatebook", handleBookUpdateController);
+
+//
+router.get("/searchbook", handleSearchBookController);
 
 module.exports = router;

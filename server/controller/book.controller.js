@@ -76,9 +76,27 @@ const handleBookUpdateController = async (req, res) => {
   }
 };
 
+const handleSearchBookController = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const books = await Book.find({
+      $or: [
+        { BookName: { $regex: new RegExp(query, "i") } },
+        { BookTitle: { $regex: new RegExp(query, "i") } },
+        { AuthorName: { $regex: new RegExp(query, "i") } },
+      ],
+    });
+    res.json({ Success: true, BookList: books });
+    console.log(BookList);
+  } catch (error) {
+    res.status(400).json({ Success: false, Message: error.message });
+  }
+};
+
 module.exports = {
   handleBookStoreController,
   handleBookListController,
   handleBookDeleteController,
   handleBookUpdateController,
+  handleSearchBookController,
 };
