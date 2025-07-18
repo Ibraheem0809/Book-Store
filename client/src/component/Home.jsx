@@ -390,20 +390,28 @@ const Home = () => {
 
   return (
     <div>
-      <div className="flex justify-end">
-        <input
-          type="text"
-          placeholder="find your book"
-          className="mx-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          value={searchTerm}
-          onChange={(e) => setsearchTerm(e.target.value)}
-        />
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition duration-200"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
+      <div className="flex justify-between items-center px-4 py-2 bg-white shadow-sm">
+        {/* Quote */}
+        <div className="text-sm italic text-gray-700">
+          "There is no friend as loyal as a book"
+        </div>
+
+        {/* Search Input */}
+        <div className="flex">
+          <input
+            type="text"
+            placeholder="Find your book"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            value={searchTerm}
+            onChange={(e) => setsearchTerm(e.target.value)}
+          />
+          <button
+            className="ml-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-md transition duration-200"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
+        </div>
       </div>
       <div className="w-full px-4 md:px-8 py-6 min-h-screen bg-gray-50">
         {/* Form Section */}
